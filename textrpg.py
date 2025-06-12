@@ -38,8 +38,8 @@ class Character:
             target.health = min(target.health + HEALTH_RESTORE, DEFAULT_HEALTH)
             print(f"{self.char_class} исцеляет {target.char_class}. Здоровье: {target.health}/{DEFAULT_HEALTH}.")
 
-    def restore_health(self) -> None:
-        self.health = DEFAULT_HEALTH
+    def restore_health(self) -> None: 
+        self.health = DEFAULT_HEALTH    #Восстановление здоровья до максимума
         print(f"{self.char_class} восстановил здоровье до {DEFAULT_HEALTH} HP.")
 
 
@@ -70,7 +70,7 @@ ENEMY_LIST = [
 def battle(team: List[Character], enemy: Enemy) -> bool:
     print(f"\nСражение с {enemy.name} началось! \nВраг имеет {enemy.health} HP.")
 
-    while any(c.is_alive for c in team) and enemy.is_alive:
+    while any(c.is_alive for c in team) and enemy.is_alive: #Пока кто-нибудь из команды жив и враг жив
         print("\nКоманда:")
         for i, char in enumerate(team):
             status = f"{char.health}/{DEFAULT_HEALTH}" if char.is_alive else "погиб"
@@ -82,7 +82,7 @@ def battle(team: List[Character], enemy: Enemy) -> bool:
                 raise ValueError
         except ValueError:
             print("Некорректный выбор.")
-            continue
+            continue    #Следущий цикл
 
         char = team[choice]
         action = input(f"Ход персонажа {char.char_class}. Выберите действие: (a) - атаковать, (h) - лечить , (q) - сбежать: ").lower()
@@ -103,7 +103,7 @@ def battle(team: List[Character], enemy: Enemy) -> bool:
                 print("Некорректный выбор цели для лечения.")
 
         elif action == 'q':
-            escape_chance = ESCAPE_CHANCES.get(char.char_class, 0.2)
+            escape_chance = ESCAPE_CHANCES.get(char.char_class, 0.2) #Получаем шанс побега
             if random.random() < escape_chance:
                 print(f"{char.char_class} сбежал с поля боя!")
                 restore_team_health(team)  
@@ -112,28 +112,28 @@ def battle(team: List[Character], enemy: Enemy) -> bool:
                 print(f"{char.char_class} не смог сбежать!")
 
         if enemy.is_alive:
-            target = random.choice([c for c in team if c.is_alive])
+            target = random.choice([c for c in team if c.is_alive]) #Атака случайного союзника
             enemy.attack(target)
 
         for c in team:
             if not c.is_alive:
                 print(f"{c.char_class} погиб!")
 
-    return any(c.is_alive for c in team)  
+    return any(c.is_alive for c in team)  # Возврат true если кто-то из команды жив
 
 
-def restore_team_health(team: List[Character]) -> None:
+def restore_team_health(team: List[Character]) -> None: 
     print("\nКоманда восстанавливает силы после побега!")
     for member in team:
         if member.is_alive:
-            member.restore_health()
+            member.restore_health() #Восстановление здоровья команды после успешного побега
 
 
 def game():
-    print("Начало игры")
+    print("\nДобро пожаловать в игру! \nВаш отряд, состоящий из Воина, Мага и Разбойника вступает в подземелье. Вашей задача - победить Дракона, находящегося на нижнем уровне подземелья, путь к которому преграждают различные монстры.\nВоин имеет повышенный урон. Маг может лечит себя либо члена команды один раз за ход. Разбойник может инициировать командный побег с поля боя.")
     team = [Character('Воин'), Character('Маг'), Character('Разбойник')]
 
-    for enemy in ENEMY_LIST[:-1]:
+    for enemy in ENEMY_LIST[:-1]: #Бой со всеми кроме дракона
         if not battle(team, enemy):
             print("Вы сбежали и избежали столкновения с врагом!")
             continue  
